@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  bot-for-humanity
+
+  Sample SAM Template for bot-for-humanity
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 10
+
+Resources:
+  BotForHumanity:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: bot_for_humanity_function
+      Handler: bot_for_humanity/app.lambda_handler
+      Runtime: python3.8
+      Policies:
+        - SESCrudPolicy:
+            IdentityName: tejanshrana.com
+      Events:
+        BotForHumanitySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(12 hours)
+            Name: bot-for-humanity-schedule
+            Description: Bot for humanity to invoke the lambda
+            Enabled: True
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  BotForHumanity:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt BotForHumanity.Arn
+  BotForHumanityFunctionIamRole:
+    Description: "Implicit IAM Role created for Bot for humanity function"
+    Value: !GetAtt BotForHumanity.Arn

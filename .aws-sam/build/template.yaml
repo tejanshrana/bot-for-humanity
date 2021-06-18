@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'bot-for-humanity
+
+  Sample SAM Template for bot-for-humanity
+
+  '
+Globals:
+  Function:
+    Timeout: 10
+Resources:
+  BotForHumanity:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: BotForHumanity
+      Handler: bot_for_humanity/app.lambda_handler
+      Runtime: python3.8
+      Policies:
+      - SESCrudPolicy:
+          IdentityName: tejanshrana.com
+      Events:
+        BotForHumanitySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(12 hours)
+            Name: bot-for-humanity-schedule
+            Description: Bot for humanity to invoke the lambda
+            Enabled: true
+Outputs:
+  BotForHumanity:
+    Description: Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - BotForHumanity
+      - Arn
+  BotForHumanityFunctionIamRole:
+    Description: Implicit IAM Role created for Bot for humanity function
+    Value:
+      Fn::GetAtt:
+      - BotForHumanity
+      - Arn
